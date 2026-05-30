@@ -1,1 +1,1 @@
-#Detect usb camera resolutions
+# Detect usb camera resolutions
