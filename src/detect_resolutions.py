@@ -1,6 +1,9 @@
 import cv2
 import platform
 
+# Import the camera detection logic from our existing script
+from detect_cameras import list_ports
+
 def test_resolutions(port_index, backend_preference=None):
     """
     Attempts to set various standard resolutions on the given camera port
@@ -65,13 +68,20 @@ def test_resolutions(port_index, backend_preference=None):
     return sorted_resolutions
 
 def main():
-    # Active camera ports detected in the previous run
-    active_ports = [0, 2, 3]
+    print("Detecting active cameras first...")
+    # Dynamically find active ports using the imported detection script
+    working_cameras = list_ports()
+    
+    if not working_cameras:
+        print("No active cameras were detected. Exiting resolution discovery.")
+        return
+        
+    active_ports = [cam["port"] for cam in working_cameras]
     
     current_os = platform.system()
     backend_preference = cv2.CAP_DSHOW if current_os == "Windows" else None
     
-    print("Beginning comprehensive resolution discovery...")
+    print("\nBeginning comprehensive resolution discovery...")
     print("=" * 60)
     
     for port in active_ports:
